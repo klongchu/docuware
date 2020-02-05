@@ -1,4 +1,5 @@
 <?php
+
 namespace DocuWare;
 
 class Document
@@ -7,10 +8,13 @@ class Document
     use Traits\GenericTypes;
 
     /**
-     * Returns document data
-     * @param  string $fileCabinetId File Cabinet ID
-     * @param  string $docId Document ID
+     * Returns document data.
+     *
+     * @param string $fileCabinetId File Cabinet ID
+     * @param string $docId         Document ID
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public function getData($fileCabinetId, $docId)
@@ -19,15 +23,17 @@ class Document
 
         $result = $this->platform->getResource($this->platform->buildURL($path));
 
-        return $this->formatResult($result, "JSON", ["s" => "Links", "test"=>"Blah"]);
-
+        return $this->formatResult($result, 'JSON', ['s' => 'Links', 'test' => 'Blah']);
     }
 
     /**
-     * Returns binary data of document
-     * @param  string $fileCabinetId File Cabinet ID
-     * @param  string $docId Document ID
+     * Returns binary data of document.
+     *
+     * @param string $fileCabinetId File Cabinet ID
+     * @param string $docId         Document ID
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public function getBinaryData($fileCabinetId, $docId)
@@ -35,15 +41,19 @@ class Document
         $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Data";
 
         $result = $this->platform->getResource($this->platform->buildURL($path));
+
         return $result;
     }
 
     /**
-     * Returns all available links for given document
-     * @param  string $fileCabinetId File Cabinet ID
-     * @param  string $docId Document ID
-     * @param  string $resultListId Result list ID
+     * Returns all available links for given document.
+     *
+     * @param string $fileCabinetId File Cabinet ID
+     * @param string $docId         Document ID
+     * @param string $resultListId  Result list ID
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public function links($fileCabinetId, $docId, $resultListId = null)
@@ -65,40 +75,44 @@ class Document
     /**
      * @param $fileCabinetId
      * @param string $format
+     *
      * @return string
+     *
      * @throws \Exception
      */
-    public function getAll($fileCabinetId, $format = "JSON")
+    public function getAll($fileCabinetId, $format = 'JSON')
     {
         $path = "/FileCabinets/{$fileCabinetId}/Documents";
 
         $result = $this->platform->getResource($this->platform->buildURL($path));
+
         return $this->formatResult($result, $format);
     }
 
     /**
-     * Upload a document to the cabinet
+     * Upload a document to the cabinet.
      *
-     * @param string $fileCabinetId File cabinet GUID
-     * @param string $file File path
-     * @param string $fields JSON/XML object containing index data
-     * @param array $pathParameters Array of all optional url parameters:
-     *              $pathParameters = [
-     *                'processTextshot' => (boolean) This parameter specifies if the document is processed and a text
-     *                                               shot is extracted for further processing. If this parameter is
-     *                                               missing or true then the text shot is created after the document
-     *                                               has been uploaded. If the parameter is false then the text shot
-     *                                               is not created, and it is neccessary to upload the text shot with
-     *                                               a subsequent request in order to benefit fromany further text shot
-     *                                               processing.
-     *                'imageProcessing' => (boolean) Define if image processing is executed when document is stored
-     *                'redirect' => (string) After the request is successfully finished you are redirected to the
-     *                                       specified URI.
-     *                'storeDialogId' => (string) Id of the store dialog from which the document is stored
-     *                'checkFileNameForCheckinInfo' => (bool) Define whether to check file name for checkin information
-     *              ]
+     * @param string $fileCabinetId  File cabinet GUID
+     * @param string $file           File path
+     * @param string $fields         JSON/XML object containing index data
+     * @param array  $pathParameters Array of all optional url parameters:
+     *                               $pathParameters = [
+     *                               'processTextshot' => (boolean) This parameter specifies if the document is processed and a text
+     *                               shot is extracted for further processing. If this parameter is
+     *                               missing or true then the text shot is created after the document
+     *                               has been uploaded. If the parameter is false then the text shot
+     *                               is not created, and it is neccessary to upload the text shot with
+     *                               a subsequent request in order to benefit fromany further text shot
+     *                               processing.
+     *                               'imageProcessing' => (boolean) Define if image processing is executed when document is stored
+     *                               'redirect' => (string) After the request is successfully finished you are redirected to the
+     *                               specified URI.
+     *                               'storeDialogId' => (string) Id of the store dialog from which the document is stored
+     *                               'checkFileNameForCheckinInfo' => (bool) Define whether to check file name for checkin information
+     *                               ]
      *
      * @return string Returns XML document
+     *
      * @throws \Exception
      */
     public function upload($fileCabinetId, $file, $fields, $pathParameters = null)
@@ -108,19 +122,19 @@ class Document
                            'imageProcessing' => ['required' => false],
                            'redirect' => ['required' => false],
                            'storeDialogId' => ['required' => false],
-                           'checkFileNameForCheckinInfo' => ['required' => false]];
+                           'checkFileNameForCheckinInfo' => ['required' => false], ];
         $fileInfo = pathinfo($file);
         $boundary = md5(time());
 
-        $content = "--".$boundary."\r\n" .
-                   "Content-Disposition: attachment; filename=document.json; name=document\r\n" .
-                   "Content-Type: application/json; charset=utf-8\r\n\r\n" .
-                   $fields . "\r\n" .
-                   "--".$boundary . "\r\n" .
-                   "Content-Disposition: attachment; filename=\"" . $fileInfo['basename'] . "\"\r\n" .
-                   "Content-Type: " . mime_content_type($file) . "\r\n\r\n" .
-                   file_get_contents($file) . "\r\n" .
-                   "--" . $boundary . "--\r\n\r\n";
+        $content = '--'.$boundary."\r\n".
+                   "Content-Disposition: attachment; filename=document.json; name=document\r\n".
+                   "Content-Type: application/json; charset=utf-8\r\n\r\n".
+                   $fields."\r\n".
+                   '--'.$boundary."\r\n".
+                   'Content-Disposition: attachment; filename="'.$fileInfo['basename']."\"\r\n".
+                   'Content-Type: '.mime_content_type($file)."\r\n\r\n".
+                   file_get_contents($file)."\r\n".
+                   '--'.$boundary."--\r\n\r\n";
 
         $url = $this->platform->buildURL($path, $pathOptions);
         $result = $this->platform->postResource($url, $content, null, $boundary);
@@ -129,11 +143,14 @@ class Document
     }
 
     // Might be nisnamed
+
     /**
      * @param $fileCabinetId
      * @param $docId
      * @param $file
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function append($fileCabinetId, $docId, $file)
@@ -144,16 +161,15 @@ class Document
                         'imageProcessing' => ['required' => false],
                         'redirect' => ['required' => false],
                         'storeDialogId' => ['required' => false],
-                        'checkFileNameForCheckinInfo' => ['required' => false]];
+                        'checkFileNameForCheckinInfo' => ['required' => false], ];
         $fileInfo = pathinfo($file);
         $boundary = md5(time());
 
-        $content = "--".$boundary . "\r\n" .
-                   "Content-Disposition: attachment; filename=\"" . $fileInfo['basename'] . "\"\r\n" .
-                   "Content-Type: " . mime_content_type($file) . "\r\n\r\n" .
-                   file_get_contents($file) . "\r\n" .
-                   "--" . $boundary . "--\r\n\r\n";
-
+        $content = '--'.$boundary."\r\n".
+                   'Content-Disposition: attachment; filename="'.$fileInfo['basename']."\"\r\n".
+                   'Content-Type: '.mime_content_type($file)."\r\n\r\n".
+                   file_get_contents($file)."\r\n".
+                   '--'.$boundary."--\r\n\r\n";
 
         $url = $this->platform->buildURL($path, $pathOptions);
         $result = $this->platform->postResource($url, $content, null, $boundary);
@@ -162,12 +178,14 @@ class Document
     }
 
     /**
-     * Download a document
+     * Download a document.
      *
-     * @param string $fileCabinetId File cabinet GUID
-     * @param string $docId DWDOCID
-     * @param array $pathParameters Array of all optional url parameters:
+     * @param string $fileCabinetId  File cabinet GUID
+     * @param string $docId          DWDOCID
+     * @param array  $pathParameters Array of all optional url parameters:
+     *
      * @return string Returns file
+     *
      * @throws \Exception
      */
     public function download($fileCabinetId, $docId, $pathParameters = null)
@@ -179,7 +197,7 @@ class Document
                         'autoPrint' => ['required' => false],
                         'sendByEmail' => ['required' => false],
                         'layers' => ['required' => false],
-                        'append' =>['required' => false]];
+                        'append' => ['required' => false], ];
 
         $url = $this->platform->buildURL($path, $pathOptions, $pathParameters);
         $result = $this->platform->getResource($url);
@@ -194,31 +212,35 @@ class Document
      * @param $docId
      * @param $clipIds
      * @param string $operation
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function clip($fileCabinetId, $docId, $clipIds, $operation = 'Clip')
     {
         $path = "/FileCabinets/{$fileCabinetId}/Operations/ClippedDocuments";
         $pathOptions = ['docId' => ['required' => true,
-                                    'type' => 'int'],
+                                    'type' => 'int', ],
                         'operation' => ['required' => false,
-                                        'options' => ['Clip','Staple']]];
+                                        'options' => ['Clip', 'Staple'], ], ];
 
         $pathParameters['docId'] = $docId;
         $pathParameters['operation'] = $operation;
 
-        $content = json_encode(["Int" => $clipIds]);
+        $content = json_encode(['Int' => $clipIds]);
         $contentType = 'application/json';
         $result = $this->platform->postResource($this->platform->buildURL($path, $pathOptions, $pathParameters), $content, $contentType);
+
         return $result;
     }
-
 
     /**
      * @param $fileCabinetId
      * @param $docId
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function unclip($fileCabinetId, $docId)
@@ -229,13 +251,16 @@ class Document
         $pathParameters['docId'] = $docId;
 
         $result = $this->platform->postResource($this->platform->buildURL($path, $pathOptions, $pathParameters));
+
         return $result;
     }
 
     /**
      * @param $fileCabinetId
      * @param $docId
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function unlock($fileCabinetId, $docId)
@@ -243,6 +268,7 @@ class Document
         $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Lock";
 
         $result = $this->platform->deleteResource($this->platform->buildURL($path));
+
         return $result;
     }
 
@@ -250,23 +276,25 @@ class Document
      * @param $docId
      * @param $fileCabinetId
      * @param null $resultList
+     *
      * @return string
+     *
      * @throws \Exception
      */
-    public function view($fileCabinetId, $sectionId, $pageNumber, $format = "pdf")
+    public function view($fileCabinetId, $sectionId, $pageNumber, $format = 'pdf')
     {
         switch ($format) {
-            case "png":
-                $format="image/png";
+            case 'png':
+                $format = 'image/png';
                 break;
-            case "pdf":
-                $format="application/pdf";
+            case 'pdf':
+                $format = 'application/pdf';
                 break;
-            case "jpg":
-                $format="image/jpeg";
+            case 'jpg':
+                $format = 'image/jpeg';
                 break;
             default:
-                $format = "application/pdf";
+                $format = 'application/pdf';
                 break;
         }
         $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$sectionId}/Image";
@@ -277,16 +305,19 @@ class Document
 
         $result = $this->platform->getResource($this->platform->buildURL($path, $pathOptions, $pathParameters));
 
-        header('Content-Type: ' . $format . '; Content-Disposition: attachment; filename="image."'.$format);
+        header('Content-Type: '.$format.'; Content-Disposition: attachment; filename="image."'.$format);
 
         return $result;
     }
 
     /**
-     * Gets document sections
+     * Gets document sections.
+     *
      * @param $docId
      * @param $fileCabinetId
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function getSections($fileCabinetId, $docId)
@@ -298,26 +329,32 @@ class Document
         $pathParameters['docid'] = $docId;
 
         $result = $this->platform->getResource($this->platform->buildURL($path, $pathOptions, $pathParameters));
+
         return $this->formatResult($result);
     }
 
     /**
-     * Gets document thumbnail
+     * Gets document thumbnail.
+     *
      * @param $docId
      * @param $fileCabinetId
      * @param $size
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function getThumbnail($fileCabinetId, $docId, $size = null)
     {
-        $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
+        //$path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
 
+        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}-0/Thumbnail?&page=0";
         if ($size !== null) {
-            $path .= "&size=" . $size;
+            $path .= '&size='.$size;
         }
-  
+
         $result = $this->platform->getResource($this->platform->buildURL($path));
+
         return $result;
     }
 }
