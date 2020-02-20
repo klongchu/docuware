@@ -70,7 +70,6 @@ class Connect
      */
     public function __call($name, $arguments)
     {
-        echo $name;
         //Accesses remote resource if method like '%Resource' is used
         if (preg_match('/([a-z]+)Resource/', $name, $matches)) {
             array_unshift($arguments, strtoupper($matches[1]));
