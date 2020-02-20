@@ -34,7 +34,7 @@ class Connect
         $this->username = $username;
         $this->password = $password;
         $this->organizationName = $organization;
-        $this->tmpDir = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."tmp";
+        $this->tmpDir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "tmp";
 
         $this->setCookieProperties();
 
@@ -70,6 +70,7 @@ class Connect
      */
     public function __call($name, $arguments)
     {
+        echo $name;
         //Accesses remote resource if method like '%Resource' is used
         if (preg_match('/([a-z]+)Resource/', $name, $matches)) {
             array_unshift($arguments, strtoupper($matches[1]));
@@ -77,7 +78,6 @@ class Connect
             return $return;
         }
     }
-
 
     private function login($httpMethod = null, $path = null, $content = null, $contentType = null, $boundary = null, $redirect = false)
     {
@@ -97,7 +97,7 @@ class Connect
             CURLOPT_POSTFIELDS => ['UserName' => $this->username,
                 'Password' => $this->password,
                 'Organization' => $this->organizationName,
-                'LicenseType' => 'PlatformService']
+                'LicenseType' => 'PlatformService'],
         ]);
 
         // Execute Request
@@ -120,7 +120,7 @@ class Connect
             if (!is_null($path)) {
                 // Renames `accessResource` method by proper
                 // mutated name, based on HTTP method
-                $redirectMethod = strtolower($httpMethod)."Resource";
+                $redirectMethod = strtolower($httpMethod) . "Resource";
                 // Calls `accessResource` method as a redirect
                 // Don't include the $httpMethod as an argument here,
                 // __call() shifts the argument list by 1
@@ -193,7 +193,7 @@ class Connect
                 "Cookie: DWOrganization={$this->organizationName};" .
                 "DWPLATFORMBROWSERID={$this->browserId};" .
                 ".DWPLATFORMAUTH={$this->authToken}",
-                "openInNewWindow=False"]
+                "openInNewWindow=False"],
         ]);
 
         /* debug start
@@ -263,7 +263,7 @@ class Connect
                 }
                 //Check if value matches defined type
                 if (array_key_exists('type', $value) &&
-                                        array_key_exists($key, $urlArguments)) {
+                    array_key_exists($key, $urlArguments)) {
                     switch ($value['type']) {
                         case 'int':
                             $match = preg_match('/^\d+$/', $urlArguments[$key]);
@@ -302,7 +302,6 @@ class Connect
             "browserId" => $this->browserId];
     }
 
-
     /**
      * Sets basic cookie properties for connection object
      */
@@ -333,10 +332,10 @@ class Connect
      */
     private function saveCookieFile()
     {
-        $cookiePath = realpath($this->tmpDir).DIRECTORY_SEPARATOR.self::$cookieFile;
+        $cookiePath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile;
         if ($cookieFile = @fopen($cookiePath, "w")) {
             fwrite($cookieFile, "<DWPLATFORMAUTH>" . $this->authToken
-              . "</DWPLATFORMAUTH>" . "<DWPLATFORMBROWSERID>" . $this->browserId . "</DWPLATFORMBROWSERID>");
+                . "</DWPLATFORMAUTH>" . "<DWPLATFORMBROWSERID>" . $this->browserId . "</DWPLATFORMBROWSERID>");
             fclose($cookieFile);
         } else {
             error_log("Cannot create, open and/or write to cookie file.
@@ -351,7 +350,7 @@ class Connect
      */
     private function loadCookieFile()
     {
-        $cookiePath = realpath($this->tmpDir).DIRECTORY_SEPARATOR.self::$cookieFile;
+        $cookiePath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile;
 
         try {
             if (!$cookieFile = @fopen($cookiePath, "r")) {
@@ -416,7 +415,7 @@ class Connect
         $path = "/Organizations/{$this->organizationId}";
         $result = json_encode(new \SimpleXMLElement($this->getResource($this->buildURL($path))));
 
-        $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR."dworginfo";
+        $orgPath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo";
 
         if ($orgFile = @fopen($orgPath, "w")) {
             fwrite($orgFile, $result);
@@ -427,7 +426,7 @@ class Connect
     private function getOrgDataFromCache()
     {
         try {
-            $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR."dworginfo";
+            $orgPath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo";
 
             if ($orgFile = @fopen($orgPath, "r")) {
                 $res = fread($orgFile, filesize($orgPath));
@@ -452,7 +451,7 @@ class Connect
     private function getOrganizationId()
     {
         $status = true;
-        $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR.self::$orgFile;
+        $orgPath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$orgFile;
 
         if (!$orgFile = @fopen($orgPath, "r")) {
             error_log("Failed to load dworg file, attempting to generate new version");
@@ -494,7 +493,7 @@ class Connect
 
     private function saveOrganizationId()
     {
-        $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR.self::$orgFile;
+        $orgPath = realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$orgFile;
 
         $result = true;
         if ($this->organizationId) {

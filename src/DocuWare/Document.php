@@ -119,22 +119,22 @@ class Document
     {
         $path = "/FileCabinets/{$fileCabinetId}/Documents";
         $pathOptions = ['processTextshot' => ['required' => false],
-                           'imageProcessing' => ['required' => false],
-                           'redirect' => ['required' => false],
-                           'storeDialogId' => ['required' => false],
-                           'checkFileNameForCheckinInfo' => ['required' => false], ];
+            'imageProcessing' => ['required' => false],
+            'redirect' => ['required' => false],
+            'storeDialogId' => ['required' => false],
+            'checkFileNameForCheckinInfo' => ['required' => false]];
         $fileInfo = pathinfo($file);
         $boundary = md5(time());
 
-        $content = '--'.$boundary."\r\n".
-                   "Content-Disposition: attachment; filename=document.json; name=document\r\n".
-                   "Content-Type: application/json; charset=utf-8\r\n\r\n".
-                   $fields."\r\n".
-                   '--'.$boundary."\r\n".
-                   'Content-Disposition: attachment; filename="'.$fileInfo['basename']."\"\r\n".
-                   'Content-Type: '.mime_content_type($file)."\r\n\r\n".
-                   file_get_contents($file)."\r\n".
-                   '--'.$boundary."--\r\n\r\n";
+        $content = '--' . $boundary . "\r\n" .
+        "Content-Disposition: attachment; filename=document.json; name=document\r\n" .
+        "Content-Type: application/json; charset=utf-8\r\n\r\n" .
+        $fields . "\r\n" .
+        '--' . $boundary . "\r\n" .
+        'Content-Disposition: attachment; filename="' . $fileInfo['basename'] . "\"\r\n" .
+        'Content-Type: ' . mime_content_type($file) . "\r\n\r\n" .
+        file_get_contents($file) . "\r\n" .
+            '--' . $boundary . "--\r\n\r\n";
 
         $url = $this->platform->buildURL($path, $pathOptions);
         $result = $this->platform->postResource($url, $content, null, $boundary);
@@ -158,18 +158,18 @@ class Document
         $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}";
 
         $pathOptions = ['processTextshot' => ['required' => false],
-                        'imageProcessing' => ['required' => false],
-                        'redirect' => ['required' => false],
-                        'storeDialogId' => ['required' => false],
-                        'checkFileNameForCheckinInfo' => ['required' => false], ];
+            'imageProcessing' => ['required' => false],
+            'redirect' => ['required' => false],
+            'storeDialogId' => ['required' => false],
+            'checkFileNameForCheckinInfo' => ['required' => false]];
         $fileInfo = pathinfo($file);
         $boundary = md5(time());
 
-        $content = '--'.$boundary."\r\n".
-                   'Content-Disposition: attachment; filename="'.$fileInfo['basename']."\"\r\n".
-                   'Content-Type: '.mime_content_type($file)."\r\n\r\n".
-                   file_get_contents($file)."\r\n".
-                   '--'.$boundary."--\r\n\r\n";
+        $content = '--' . $boundary . "\r\n" .
+        'Content-Disposition: attachment; filename="' . $fileInfo['basename'] . "\"\r\n" .
+        'Content-Type: ' . mime_content_type($file) . "\r\n\r\n" .
+        file_get_contents($file) . "\r\n" .
+            '--' . $boundary . "--\r\n\r\n";
 
         $url = $this->platform->buildURL($path, $pathOptions);
         $result = $this->platform->postResource($url, $content, null, $boundary);
@@ -192,12 +192,12 @@ class Document
     {
         $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/FileDownload";
         $pathOptions = ['targetFileType' => ['required' => false],
-                        'keepAnnotations' => ['required' => false],
-                        'downloadFile' => ['required' => false],
-                        'autoPrint' => ['required' => false],
-                        'sendByEmail' => ['required' => false],
-                        'layers' => ['required' => false],
-                        'append' => ['required' => false], ];
+            'keepAnnotations' => ['required' => false],
+            'downloadFile' => ['required' => false],
+            'autoPrint' => ['required' => false],
+            'sendByEmail' => ['required' => false],
+            'layers' => ['required' => false],
+            'append' => ['required' => false]];
 
         $url = $this->platform->buildURL($path, $pathOptions, $pathParameters);
         $result = $this->platform->getResource($url);
@@ -221,9 +221,9 @@ class Document
     {
         $path = "/FileCabinets/{$fileCabinetId}/Operations/ClippedDocuments";
         $pathOptions = ['docId' => ['required' => true,
-                                    'type' => 'int', ],
-                        'operation' => ['required' => false,
-                                        'options' => ['Clip', 'Staple'], ], ];
+            'type' => 'int'],
+            'operation' => ['required' => false,
+                'options' => ['Clip', 'Staple']]];
 
         $pathParameters['docId'] = $docId;
         $pathParameters['operation'] = $operation;
@@ -305,7 +305,7 @@ class Document
 
         $result = $this->platform->getResource($this->platform->buildURL($path, $pathOptions, $pathParameters));
 
-        header('Content-Type: '.$format.'; Content-Disposition: attachment; filename="image."'.$format);
+        header('Content-Type: ' . $format . '; Content-Disposition: attachment; filename="image."' . $format);
 
         return $result;
     }
@@ -344,13 +344,18 @@ class Document
      *
      * @throws \Exception
      */
-    public function getThumbnail($fileCabinetId, $docId, $size = null)
+    public function getThumbnail($fileCabinetId, $docId, $size = null, $page = null)
     {
         //$path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
 
-        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}-0/Thumbnail?&page=0";
+        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}-0/Thumbnail?";
         if ($size !== null) {
-            $path .= '&size='.$size;
+            $path .= '&size=' . $size;
+        }
+        if ($page !== null) {
+            $path .= '&page=' . $page;
+        } else {
+            $path .= '&page=0';
         }
 
         $result = $this->platform->getResource($this->platform->buildURL($path));
