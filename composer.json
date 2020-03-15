@@ -3,10 +3,12 @@
     "description": "Docuware",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "Klongchu Dev",
-        "email": "klongchu@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Klongchu Dev",
+            "email": "klongchu@gmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "DocuWare\\": "src/DocuWare"
@@ -14,7 +16,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.6 <=7.4",
+        "php": "^7.2",
         "ext-curl": "*",
         "codeception/codeception": "^4.0"
     }
