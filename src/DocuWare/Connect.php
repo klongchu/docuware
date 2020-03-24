@@ -282,7 +282,7 @@ class Connect
             $path .= '?' . http_build_query($urlArguments);
         }
 
-        $url = $this->host . "/PlatformRO{$path}";
+        $url = $this->host . "/{$path}";
 
         return $url;
     }
