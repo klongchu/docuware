@@ -348,7 +348,7 @@ class Document
     {
         //$path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
 
-        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}-0/Thumbnail?";
+        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}/Thumbnail?";
         if ($size !== null) {
             $path .= '&size=' . $size;
         }
