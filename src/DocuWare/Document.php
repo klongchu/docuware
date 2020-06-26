@@ -272,6 +272,24 @@ class Document
         return $result;
     }
 
+
+    /**
+     * @param $fileCabinetId
+     * @param $docId
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function deleteDocument($fileCabinetId, $docId)
+    {
+        $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}";
+
+        $result = $this->platform->deleteResource($this->platform->buildURL($path));
+
+        return $result;
+    }
+
     /**
      * @param $docId
      * @param $fileCabinetId
