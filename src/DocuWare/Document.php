@@ -364,9 +364,8 @@ class Document
      */
     public function getThumbnail($fileCabinetId, $docId, $size = null, $page = null)
     {
-        //$path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
-
-        $path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}/Thumbnail?";
+        $path = "/FileCabinets/{$fileCabinetId}/Documents/{$docId}/Thumbnail?&annotations=False";
+        //$path = "/FileCabinets/{$fileCabinetId}/Rendering/{$docId}/Thumbnail?";
         if ($size !== null) {
             $path .= '&size=' . $size;
         }
