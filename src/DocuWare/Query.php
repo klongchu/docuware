@@ -42,19 +42,20 @@ class Query
         return $this->resultSet;
     }
 
-    public function documentCount($fileCabinetId, $fieldName){
+    public function documentCount($fileCabinetId, $fieldName)
+    {
 
         $path = "/FileCabinets/{$fileCabinetId}/Query/CountExpression";
-        
+
         $data = [
-                    "FieldName" => $fieldName, 
-                    "Count" => $count, 
-                    "Start" => $start, 
-                    "Limit" => $limit, 
-                    "SortDirection" => $sortDirection, 
-                    "ExcludeExternal" => $excludeExternal,
-                    "Typed" => $typed
-                ];
+            "FieldName" => $fieldName,
+            "Count" => $count,
+            "Start" => $start,
+            "Limit" => $limit,
+            "SortDirection" => $sortDirection,
+            "ExcludeExternal" => $excludeExternal,
+            "Typed" => $typed,
+        ];
 
         $postData = \http_build_query($data);
 
@@ -67,19 +68,20 @@ class Query
     }
 
     /**** THIS ENDPOINT IS MISSING IN V7 ****/
-    public function fieldValueStatistics($fileCabinetId, $fieldName, $count = 0, $start = 0, $limit = 0, $sortDirection = "Default", $excludeExternal = false, $typed = false){
+    public function fieldValueStatistics($fileCabinetId, $fieldName, $count = 0, $start = 0, $limit = 0, $sortDirection = "Default", $excludeExternal = false, $typed = false)
+    {
 
         $path = "/FileCabinets/{$fileCabinetId}/Query/FieldValueStatistics";
-        
+
         $data = [
-                    "FieldName" => $fieldName, 
-                    "Count" => $count, 
-                    "Start" => $start, 
-                    "Limit" => $limit, 
-                    "SortDirection" => $sortDirection, 
-                    "ExcludeExternal" => $excludeExternal,
-                    "Typed" => $typed
-                ];
+            "FieldName" => $fieldName,
+            "Count" => $count,
+            "Start" => $start,
+            "Limit" => $limit,
+            "SortDirection" => $sortDirection,
+            "ExcludeExternal" => $excludeExternal,
+            "Typed" => $typed,
+        ];
 
         $postData = \http_build_query($data);
 
@@ -88,6 +90,38 @@ class Query
         $this->resultSet = $this->formatResult($this->platform->postResource($url, $postData));
 
         return $this->resultSet;
+
+    }
+
+    public function searchDialogExpression($fileCabinetId, $dialogId,$data = [])
+    {
+
+        $path = "/FileCabinets/{$fileCabinetId}/Query/DialogExpression?dialogId={$dialogId}";
+        //example
+        // $data = [
+        //     'Condition' => [
+        //         [
+        //             'DBName' => "Field",
+        //             "Value" => ["123456"],
+        //         ],
+        //     ],
+        //     'SortOrder' => [
+        //         [
+        //             'Field' => "STOREDATETIME",
+        //             "Direction" => "Desc",
+        //         ],
+        //     ],
+        //     'ForceRefresh' => true,
+        //     'Operation' => "And",
+        //     'AdditionalResultFields' => [],
+        //     "Start" => 0,
+        //     "Count" => 5,
+        //     "IncludeSuggestions" => false,
+        // ];
+
+        $url = $this->platform->buildURL($path);
+        return $this->formatResult($this->platform->postResource($url, json_encode($data), "application/json"));
+
 
     }
 }
