@@ -4,7 +4,6 @@ example.php
 documents/
 vendor/
 composer.lock
-tmp/*
 .idea*
 .idea/
 *.DS_Store
