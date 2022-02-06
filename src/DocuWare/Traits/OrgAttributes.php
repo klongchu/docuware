@@ -12,7 +12,7 @@ trait OrgAttributes
     public function pullAttributes()
     {
         try {
-            $this->tmpDir = dirname(dirname(dirname(__DIR__))).DIRECTORY_SEPARATOR."tmp";
+            $this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
             
             $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR."dworginfo";
 
