@@ -34,7 +34,8 @@ class Connect
         $this->username = $username;
         $this->password = $password;
         $this->organizationName = $organization;
-        $this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
+        //$this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
+        $this->tmpDir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "tmp";
 
         $this->setCookieProperties();
 
