@@ -13,8 +13,8 @@ trait OrgAttributes
     {
         try {
             
-            //$this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
-            $this->tmpDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . "tmp";
+            $this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
+            //$this->tmpDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . "tmp";
             $orgPath = realpath($this->tmpDir).DIRECTORY_SEPARATOR."dworginfo";
             
             if ($orgFile = @fopen($orgPath, "r")) {

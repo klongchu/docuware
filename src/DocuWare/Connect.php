@@ -34,10 +34,22 @@ class Connect
         $this->username = $username;
         $this->password = $password;
         $this->organizationName = $organization;
-        //$this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
-        $this->tmpDir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "tmp";
+        $this->tmpDir = storage_path('docuware') . DIRECTORY_SEPARATOR . "tmp";
+        //$this->tmpDir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "tmp";
 
-        $this->setCookieProperties();
+        if (!file_exists($this->tmpDir)) {
+            mkdir($this->tmpDir, 0777, true);
+        }
+        if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile)) {
+            touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile);
+        }
+        if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo")) {
+            touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo");
+        }
+
+        if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworg")) {
+            touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworg");
+        }
 
         if (!$this->validateCookie()) {
             $loginStatus = $this->login();
@@ -48,6 +60,8 @@ class Connect
         } else {
             $this->getOrganizationId();
         }
+        
+        $this->setCookieProperties();
 
         // Attempts to load organization info from cache,
         if (!$this->getOrgDataFromCache()) {
