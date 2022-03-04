@@ -39,16 +39,20 @@ class Connect
 
         if (!file_exists($this->tmpDir)) {
             mkdir($this->tmpDir, 0777, true);
+            chmod($this->tmpDir, 0777);
         }
         if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile)) {
             touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile);
+            chmod(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . self::$cookieFile, 0777);
         }
         if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo")) {
             touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo");
+            chmod(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworginfo", 0777);
         }
 
         if (!file_exists(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworg")) {
             touch(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworg");
+            chmod(realpath($this->tmpDir) . DIRECTORY_SEPARATOR . "dworg", 0777);
         }
 
         if (!$this->validateCookie()) {
@@ -60,7 +64,7 @@ class Connect
         } else {
             $this->getOrganizationId();
         }
-        
+
         $this->setCookieProperties();
 
         // Attempts to load organization info from cache,
@@ -375,7 +379,7 @@ class Connect
             };
 
             fclose($cookieFile);
-        } catch (\Exception $e) {
+        } catch (\Exception$e) {
             error_log($e->getMessage());
             error_log("Attempting to generate new cookie file in '" . $cookiePath . "'");
             return;
@@ -391,23 +395,29 @@ class Connect
      */
     private function validateCookie()
     {
-        $response = false;
+        try {
+            $response = false;
 
-        $localCookie = $this->loadCookieFile();
+            $localCookie = $this->loadCookieFile();
 
-        if (!$localCookie) {
+            if (!$localCookie) {
+                return $response;
+            }
+
+            $localAuthToken = \DocuWare\Utility::getStringBetween($localCookie, "<DWPLATFORMAUTH>", "</DWPLATFORMAUTH>");
+
+            if ($localAuthToken != null) {
+                $response = true;
+            } else {
+                error_log("Empty Token");
+            }
+
+            return $response;
+
+        } catch (\Throwable$th) {
             return $response;
         }
 
-        $localAuthToken = \DocuWare\Utility::getStringBetween($localCookie, "<DWPLATFORMAUTH>", "</DWPLATFORMAUTH>");
-
-        if ($localAuthToken != null) {
-            $response = true;
-        } else {
-            error_log("Empty Token");
-        }
-
-        return $response;
     }
 
     /**
@@ -453,7 +463,7 @@ class Connect
             }
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception$e) {
             return false;
         }
     }
@@ -471,9 +481,14 @@ class Connect
             error_log("Failed to load dworg file, attempting to generate new version");
             $status = false;
         }
-        if (!$orgResult = @fread($orgFile, filesize($orgPath))) {
+
+        if (filesize($orgPath) > 0) {
+            if (!$orgResult = @fread($orgFile, filesize($orgPath))) {
+                $status = false;
+            }
+        } else {
             $status = false;
-        };
+        }
 
         if ($orgFile) {
             fclose($orgFile);
