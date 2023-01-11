@@ -18,6 +18,6 @@
     "require": {
         "php": "^7.3|^8.0",
         "ext-curl": "*",
-        "codeception/codeception": "5.0.0-RC3"
+        "codeception/codeception": "5.0.6"
     }
 }
