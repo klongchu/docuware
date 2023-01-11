@@ -79,7 +79,12 @@ class Connect
      */
     public function __destruct()
     {
-        curl_close($this->curl);
+        try {
+            curl_close($this->curl);
+            unset($this->curl);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**
